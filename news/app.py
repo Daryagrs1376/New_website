@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 from flask import Flask, request, jsonify # type: ignore
-=======
-from flask import Flask, request, jsonify
->>>>>>> origin/master
 from sms_service import send_sms  # وارد کردن تابع ارسال پیامک
 import random
 

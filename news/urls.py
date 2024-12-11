@@ -82,11 +82,6 @@ router.register(r'categories', CategoryViewSet, basename='categories')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> origin/master
     # path('news/', include('news.urls')),
     
     path('send-sms/',views.send_sms),
@@ -97,11 +92,7 @@ urlpatterns = [
 
     # path('article/<int:article_id>/comment/', views.comment_create, name='comment_create'),
     # path('article/<int:article_id>/', views.article_detail, name='article_detail'),
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
->>>>>>> origin/master
-    
+        
     path('send-sms/',views.send_sms),
     path('verify_code/', views.verify_otp), 
         
@@ -110,14 +101,8 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
-<<<<<<< HEAD
     # path('news/', NewsListView.as_view(), name='news-list'),
-=======
-<<<<<<< Updated upstream
-=======
-    # path('news/', NewsListView.as_view(), name='news-list'),
->>>>>>> Stashed changes
->>>>>>> origin/master
+
     path('news/create/', NewsCreateView.as_view(), name='news-create'),
     path('news/<int:pk>/', NewsDetailView.as_view(), name='news-detail'),
 

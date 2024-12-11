@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 from kavenegar import KavenegarAPI, APIException, HTTPException # type: ignore
-=======
-from kavenegar import KavenegarAPI, APIException, HTTPException
->>>>>>> origin/master
 
 def send_sms(phone_number, message):
     """

@@ -1,21 +1,9 @@
 import uuid
 import random
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
->>>>>>> origin/master
-from haystack import indexes  # type: ignore
+from haystack import indexes 
 from django import forms
 from django.db import models
 from django.apps import apps
-<<<<<<< HEAD
-=======
-=======
-# from haystack import indexes  # type: ignore
-from django import forms
-from django.db import models
->>>>>>> Stashed changes
->>>>>>> origin/master
 from django.conf import settings
 from django.utils import timezone
 from django.utils.timezone import now
@@ -29,7 +17,6 @@ Group,
 Permission,
 PermissionsMixin,
 )
-
 
 User = get_user_model()
 
@@ -52,25 +39,11 @@ class media(models.Model):
     def __str__(self):
         return f"{self.file.name}" 
 
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
->>>>>>> origin/master
 class NewsIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
 
     def get_model(self):
         return News
-<<<<<<< HEAD
-=======
-=======
-# class NewsIndex(indexes.SearchIndex, indexes.Indexable):
-#     text = indexes.CharField(document=True, use_template=True)
-
-#     def get_model(self):
-#         return News
->>>>>>> Stashed changes
->>>>>>> origin/master
     
 class OTP(models.Model):
     phone = models.CharField(max_length=15, unique=True)
@@ -129,22 +102,10 @@ class Subtitle(models.Model):
             
 class NewsCategory(models.Model):
     news = models.ForeignKey('News', on_delete=models.CASCADE)
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
->>>>>>> origin/master
     category = models.ForeignKey('Category', on_delete=models.CASCADE) 
     category = models.ForeignKey('Category', on_delete=models.CASCADE)  
     status = models.BooleanField(default=True)
     articles = models.ManyToManyField('NewsArticle') 
-<<<<<<< HEAD
-=======
-=======
-    category = models.ForeignKey('Category', on_delete=models.CASCADE)  # using string for Category
-    status = models.BooleanField(default=True)
-    articles = models.ManyToManyField('NewsArticle')  # using string for NewsArticle
->>>>>>> Stashed changes
->>>>>>> origin/master
 
     def __str__(self):
         return f"{self.news.title} - {self.category.title}"

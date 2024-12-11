@@ -1,19 +1,9 @@
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
->>>>>>> origin/master
 from .utils import send_sms
 from .models import News
 from .serializers import CommentSerializer
 from .serializers import PostSerializer
 from rest_framework import generics
-<<<<<<< HEAD
 from django_filters.rest_framework import DjangoFilterBackend # type: ignore
-=======
-=======
-from django_filters.rest_framework import DjangoFilterBackend # type: ignore
->>>>>>> Stashed changes
->>>>>>> origin/master
 from .permissions import IsNotAuthenticated
 from.forms import SubtitleForm, AddCategoryForm
 from django.utils import timezone
@@ -44,7 +34,6 @@ from django.contrib.auth.decorators import login_required
 from news.models import NewsCategory, NewsArticle, Category, News
 from django.utils import timezone
 from random import randint
-<<<<<<< HEAD
 from twilio.rest import Client # type: ignore
 import os
 from django.conf import settings 
@@ -52,33 +41,16 @@ from django_filters.rest_framework import DjangoFilterBackend # type: ignore
 from twilio.rest import Client # type: ignore
 import os
 from django.conf import settings 
-=======
-<<<<<<< Updated upstream
 from twilio.rest import Client
 import os
 from django.conf import settings 
 from django_filters.rest_framework import DjangoFilterBackend
-=======
-from twilio.rest import Client # type: ignore
-import os
-from django.conf import settings 
->>>>>>> Stashed changes
->>>>>>> origin/master
 from rest_framework.authentication import(
 SessionAuthentication,
 TokenAuthentication )
 from django.utils.http import (
 urlsafe_base64_encode,
-<<<<<<< HEAD
 urlsafe_base64_decode)
-=======
-<<<<<<< Updated upstream
-urlsafe_base64_decode)
-=======
-urlsafe_base64_decode, 
-)
->>>>>>> Stashed changes
->>>>>>> origin/master
 from django.contrib.auth.tokens import (
 PasswordResetTokenGenerator)
 from rest_framework.generics import(
@@ -150,22 +122,10 @@ PasswordResetSerializer,
 RegisterSerializer,
 PostSerializer,
 )
-<<<<<<< HEAD
-from .models import(
-News,
-# Category,
-=======
-<<<<<<< Updated upstream
 from.models import(
 Comment,
 Advertising,
 Category,
-=======
-from .models import(
-News,
-# Category,
->>>>>>> Stashed changes
->>>>>>> origin/master
 Subtitle,
 ReporterProfile,
 UserProfile,
@@ -178,16 +138,10 @@ Setting,
 Report,
 User, 
 Like,
-<<<<<<< HEAD
 User,
 OTP, 
-=======
-<<<<<<< Updated upstream
 User,
 OTP, 
-=======
->>>>>>> Stashed changes
->>>>>>> origin/master
 Role,
 Post,
 # News,
@@ -199,10 +153,6 @@ IsAdminUserOrReadOnly,
 
 User = get_user_model()
 
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
->>>>>>> origin/master
 def article_detail(request, article_id):
     article = get_object_or_404(NewsArticle, pk=article_id)
     comments = article.comment_set.filter(approved=True)  
@@ -210,49 +160,16 @@ def article_detail(request, article_id):
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('login') 
-<<<<<<< HEAD
-=======
-=======
-
-def article_detail(request, article_id):
-    # دریافت مقاله یا ارور 404
-    article = get_object_or_404(NewsArticle, pk=article_id)
-    comments = article.comment_set.filter(approved=True)  # فقط نظرات تایید شده
-
-    # بررسی درخواست POST برای ارسال نظر
-    if request.method == 'POST':
-        if not request.user.is_authenticated:  # احراز هویت کاربر
-            return redirect('login')  # اگر وارد نشده، به صفحه ورود هدایت شود
->>>>>>> Stashed changes
->>>>>>> origin/master
-
+        
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
->>>>>>> origin/master
             comment.user = request.user
             comment.news_article = article
             comment.save() 
             return redirect('article_detail', article_id=article.id)  
     else:
         form = CommentForm() 
-
-<<<<<<< HEAD
-=======
-=======
-            comment.user = request.user  # افزودن کاربر ارسال‌کننده
-            comment.news_article = article  # تنظیم مقاله
-            comment.save()  # ذخیره نظر
-            return redirect('article_detail', article_id=article.id)  # بازگشت به صفحه مقاله
-    else:
-        form = CommentForm()  # فرم خالی
-
-    # رندر صفحه با داده‌ها
->>>>>>> Stashed changes
->>>>>>> origin/master
     return render(request, 'news/article_detail.html', {
         'article': article,
         'comments': comments,
@@ -267,23 +184,11 @@ def like_article(request, article_id):
     
     return redirect('article_detail', article_id=article.id)
 
-<<<<<<< HEAD
-@login_required  
-=======
-<<<<<<< Updated upstream
-@login_required  
-=======
 @login_required  # این ویو باید فقط برای کاربران وارد شده در دسترس باشد
->>>>>>> Stashed changes
->>>>>>> origin/master
 def report_comment(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
 
     if request.method == 'POST':
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
->>>>>>> origin/master
         reason = request.POST.get('reason')
         if reason: 
             Report.objects.create(user=request.user, comment=comment, reason=reason)
@@ -292,18 +197,9 @@ def report_comment(request, comment_id):
 
 @api_view(['POST'])
 def like_news(request, pk):
-<<<<<<< HEAD
     try:
         news_item = News.objects.get(pk=pk) 
         news_item.likes += 1  
-=======
-    """
-    این تابع تعداد لایک‌های یک خبر مشخص را افزایش می‌دهد.
-    """
-    try:
-        news_item = News.objects.get(pk=pk)  # خبر را از دیتابیس پیدا کنید
-        news_item.likes += 1  # فرض کنید فیلد likes در مدل شما وجود دارد
->>>>>>> origin/master
         news_item.save()
         return Response({'message': 'News liked successfully!'})
     except News.DoesNotExist:
@@ -347,28 +243,10 @@ def verify_otp(request):
     return JsonResponse({"success": False, "message": "فقط درخواست POST مجاز است"})
 
 class NewsArchiveView(ArchiveIndexView):
-<<<<<<< HEAD
     model = News 
     date_field = "published_date"  
     template_name = "news_archive.html" 
     
-=======
-    model = News  # مدل مرتبط با اخبار
-    date_field = "published_date"  # فرض کنید تاریخ انتشار این فیلد است
-    template_name = "news_archive.html"  # نام فایل قالب HTML
-    
-=======
-        # دریافت دلیل گزارش از درخواست
-        reason = request.POST.get('reason')
-        if reason:  # بررسی وجود دلیل گزارش
-            Report.objects.create(user=request.user, comment=comment, reason=reason)  # ایجاد گزارش
-            return redirect('article_detail', article_id=comment.news_article.id)  # بازگشت به مقاله
-
-    # رندر فرم گزارش
-    return render(request, 'report_comment.html', {'comment': comment})
-
->>>>>>> Stashed changes
->>>>>>> origin/master
 class UserProfileDetailView(RetrieveAPIView):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer

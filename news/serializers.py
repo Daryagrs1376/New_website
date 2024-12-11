@@ -21,20 +21,9 @@ User = get_user_model()
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-<<<<<<< HEAD
 
         fields = ['id', 'user', 'news_article', 'text','content', 'created_at']
 
-=======
-<<<<<<< Updated upstream
-
-        fields = ['id', 'user', 'news_article', 'text','content', 'created_at']
-
-=======
-        fields = ['id', 'user', 'news_article', 'content', 'created_at']
-        
->>>>>>> Stashed changes
->>>>>>> origin/master
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
