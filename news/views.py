@@ -34,6 +34,7 @@ from django.contrib.auth.decorators import login_required
 from news.models import NewsCategory, NewsArticle, Category, News
 from django.utils import timezone
 from random import randint
+from news.views import verify_otp
 from twilio.rest import Client # type: ignore
 import os
 from django.conf import settings 
