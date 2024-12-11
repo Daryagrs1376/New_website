@@ -34,15 +34,7 @@ from django.contrib.auth.decorators import login_required
 from news.models import NewsCategory, NewsArticle, Category, News
 from django.utils import timezone
 from random import randint
-from news.views import verify_otp
 from twilio.rest import Client # type: ignore
-import os
-from django.conf import settings 
-from django_filters.rest_framework import DjangoFilterBackend # type: ignore
-from twilio.rest import Client # type: ignore
-import os
-from django.conf import settings 
-from twilio.rest import Client
 import os
 from django.conf import settings 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -243,6 +235,9 @@ def verify_otp(request):
         return JsonResponse({"success": True, "message": "ورود موفقیت‌آمیز بود!"})
     return JsonResponse({"success": False, "message": "فقط درخواست POST مجاز است"})
 
+    def some_view(request):
+        from news.views import verify_otp
+        
 class NewsArchiveView(ArchiveIndexView):
     model = News 
     date_field = "published_date"  
