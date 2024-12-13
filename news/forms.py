@@ -1,8 +1,10 @@
 from django import forms
-from .models import User
-from .models import Subtitle
-from .models import ReporterProfile, Comment
-
+from .models import(
+ReporterProfile,
+Subtitle,
+Comment,
+User,
+)
 
 
 class ReporterProfileForm(forms.ModelForm):
@@ -24,18 +26,18 @@ class AddCategoryForm(forms.Form):
             (5, 'politics'),
             (6, 'culture'),
         ],
-        label='انتخاب دسته‌بندی اصلی'
+        label='انتخاب دسته‌بندی اصلی',
+        required=True,
     )
 
-    add_button = forms.BooleanField(required=False, label='افزودن')
-
-    close_button = forms.BooleanField(required=False, label='بستن')
+    add_button = forms.BooleanField(required=False, label='افزودن دسته‌بندی جدید')
+    close_button = forms.BooleanField(required=False, label='بستن فرم')
 
 class EditCategoryForm(forms.Form):
-    onvan_news = forms.CharField(max_length=255)
-    short_description = forms.CharField(widget=forms.Textarea)
-    add_media = forms.FileField(required=False)
-    remove_media = forms.BooleanField(required=False)
+    onvan_news = forms.CharField(max_length=255, label='عنوان خبر', required=True)
+    short_description = forms.CharField(widget=forms.Textarea, label='توضیح کوتاه', required=True)
+    add_media = forms.FileField(required=False, label='اضافه کردن رسانه')
+    remove_media = forms.BooleanField(required=False, label='حذف رسانه')
     category = forms.ChoiceField(choices=[(1, 'Category 1'), (2, 'Category 2')]) 
     keywords = forms.CharField(max_length=255)
     record_news = forms.BooleanField(required=False)    
@@ -54,5 +56,7 @@ class SubtitleForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['content'] 
-        
+        fields = ['content']
+        labels = {
+            'content': 'متن دیدگاه',
+        }
