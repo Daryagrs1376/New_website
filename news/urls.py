@@ -93,6 +93,7 @@ urlpatterns = [
         
     path('comment/report/<int:comment_id>/', views.report_comment, name='report_comment'),
     path('article/<int:article_id>/', views.article_detail, name='article_detail'),
+    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
