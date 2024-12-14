@@ -743,6 +743,7 @@ class AddSubtitle(View):
             form = SubtitleForm(instance=subtitle)
         return render(request, 'template_name.html', {'form': form})
 
+<<<<<<< HEAD
     def delete_subtitle(request, subtitle_id):
         try:
             
@@ -758,6 +759,14 @@ class AddSubtitle(View):
     #         subtitle.delete()
     #         return redirect('some_view_name') 
     #     return render(request, 'template_name.html', {'subtitle': subtitle})
+=======
+    def delete_subtitle(request, pk):
+        subtitle = get_object_or_404(Subtitle, pk=pk)
+        if request.method == "POST":
+            subtitle.delete()
+            return redirect('some_view_name') 
+        return render(request, 'template_name.html', {'subtitle': subtitle})
+>>>>>>> 26d315164062137ad3736b99b9e6bd0890d39fa1
 
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
