@@ -5,7 +5,7 @@ from .serializers import PostSerializer
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend 
 from .permissions import IsNotAuthenticated
-from.forms import SubtitleForm, AddCategoryForm
+from.forms import SubtitleForm
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.utils.timezone import now, timedelta
@@ -23,6 +23,8 @@ from .models import Advertising
 from datetime import datetime, timedelta
 from django.utils.timezone import now
 from django.views import View
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
@@ -220,6 +222,20 @@ def send_otp(request):
 
         return JsonResponse({"success": True, "message": "کد تأیید ارسال شد."})
     return JsonResponse({"success": False, "message": "فقط درخواست POST مجاز است"})
+
+def delete_subtitle(request, pk):
+    subtitle = get_object_or_404(Subtitle, pk=pk)
+    subtitle.delete()
+    return HttpResponseRedirect(reverse('subtitle-list'))
+
+
+def edit_subtitle(request, pk):
+    subtitle = get_object_or_404(Subtitle, pk=pk)
+    if request.method == 'POST':
+        subtitle.text = request.POST['text']  # فرض کنید شما در فرم ویرایش، فیلدی به نام 'text' دارید
+        subtitle.save()
+        return HttpResponseRedirect(reverse('subtitle-list'))  # مسیر نمایش لیست زیرنویس‌ها بعد از ویرایش
+    return render(request, 'news/edit_subtitle.html', {'subtitle': subtitle})
 
 def verify_otp(request):
     if request.method == "POST":
@@ -727,12 +743,21 @@ class AddSubtitle(View):
             form = SubtitleForm(instance=subtitle)
         return render(request, 'template_name.html', {'form': form})
 
-    def delete_subtitle(request, pk):
-        subtitle = get_object_or_404(Subtitle, pk=pk)
-        if request.method == "POST":
+    def delete_subtitle(request, subtitle_id):
+        try:
+            
+            subtitle = Subtitle.objects.get(id=subtitle_id)
             subtitle.delete()
-            return redirect('some_view_name') 
-        return render(request, 'template_name.html', {'subtitle': subtitle})
+            return HttpResponse("Subtitle deleted successfully.")
+        except Subtitle.DoesNotExist:
+            return HttpResponse("Subtitle not found.", status=404)
+        
+    # def delete_subtitle(request, pk):
+    #     subtitle = get_object_or_404(Subtitle, pk=pk)
+    #     if request.method == "POST":
+    #         subtitle.delete()
+    #         return redirect('some_view_name') 
+    #     return render(request, 'template_name.html', {'subtitle': subtitle})
 
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
