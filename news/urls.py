@@ -148,7 +148,7 @@ urlpatterns = [
     path('custom-register/', RegisterView.as_view(), name='custom-register'),
 
     path('', include(router.urls)),
-    # path('api/', include(router.urls)), 
+    path('api/', include(router.urls)), 
     # path('create-news/', create_news, name='create_news'),
     path('password-reset-request/', RequestPasswordResetAPIView.as_view(), name='password-reset-request'),
     path('password-reset/<uidb64>/<token>/', ResetPasswordAPIView.as_view(), name='password-reset'),

@@ -799,10 +799,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-# class UserProfileViewSet(viewsets.ModelViewSet):
-#     queryset = UserProfile.objects.all()
-#     serializer_class = UserProfileSerializer
-
     @action(detail=False, methods=['patch'])
     def change_phone(self, request, pk=None):
         profile = self.get_object()
