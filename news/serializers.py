@@ -111,6 +111,7 @@ class PasswordResetSerializer(serializers.Serializer):
         if not PasswordResetTokenGenerator().check_token(user, value):
             raise serializers.ValidationError("توکن معتبر نیست یا منقضی شده است.")
         return value
+    
 class SubtitleSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     text = serializers.CharField(max_length=200)
@@ -168,10 +169,11 @@ class NewsSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if not data.get('categories'):
             raise serializers.ValidationError("فیلد 'categories' نمی‌تواند خالی باشد.")
+        
         if not data.get('keywords'):
             raise serializers.ValidationError("فیلد 'keywords' نمی‌تواند خالی باشد.")
+        
         return data
-
 
 class NewsEditSerializer(serializers.ModelSerializer):
     class Meta:
@@ -242,47 +244,3 @@ class NewsSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = ['id', 'title', 'subtitle', 'content', 'created_at', 'author']
-
-
-# class OperationSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Operation
-#         fields = ['id', 'news', 'operation_type', 'performed_at']
-        
-# class AdminAdvertisingSerializer(serializers.ModelSerializer):
-#     status = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = Advertising
-#         fields = ['id', 'location', 'start_date', 'expiration_date', 'status']
-
-# class UserProfileSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserProfile
-#         fields = ['id', 'phone_number']
-
-# class UserSerializer(serializers.ModelSerializer):
-#     profile = UserProfileSerializer()
-    
-# class AddUserSerializer(serializers.ModelSerializer):
-#     password = serializers.CharField(write_only=True)
-#     confirm_password = serializers.CharField(write_only=True)
-
-#     class Meta:
-#         model = User
-#         fields = ['name', 'phone_number', 'password', 'confirm_password', 'role']
-
-#     def validate(self, data):
-#         if data['password'] != data['confirm_password']:
-#             raise serializers.ValidationError("Passwords do not match")
-#         return data
-
-#     def create(self, validated_data):
-#         user = User(
-#             name=validated_data['name'],
-#             phone_number=validated_data['phone_number'],
-#             role=validated_data['role'],
-#         )
-#         user.set_password(validated_data['password'])
-#         user.save()
-#         return user

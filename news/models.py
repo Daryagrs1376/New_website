@@ -103,7 +103,6 @@ class Subtitle(models.Model):
 class NewsCategory(models.Model):
     news = models.ForeignKey('News', on_delete=models.CASCADE)
     category = models.ForeignKey('Category', on_delete=models.CASCADE) 
-    category = models.ForeignKey('Category', on_delete=models.CASCADE)  
     status = models.BooleanField(default=True)
     articles = models.ManyToManyField('NewsArticle') 
 
@@ -152,7 +151,7 @@ class Grouping(models.Model):
     
 class News(models.Model):
     reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-    categories = models.ManyToManyField('Category', through='Newscategory', related_name='news_categories')
+    categories = models.ManyToManyField('Category', through='NewsCategory', related_name='news_categories')
     title = models.CharField(max_length=255)
     content = models.TextField()
     likes = models.IntegerField(default=0)
@@ -325,14 +324,10 @@ class PageView(models.Model):
     page_views = models.JSONField()  
     
 class Comment(models.Model):
-    news = models.ForeignKey(News, related_name='comments', on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
     likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0)
-
-class Comment(models.Model):
+    dislikes = models.IntegerField(default=0) 
+    news = models.ForeignKey(News, related_name='comments', on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)  
     news_article = models.ForeignKey('NewsArticle', on_delete=models.CASCADE)  
     content = models.TextField()  
@@ -362,3 +357,8 @@ class Like(models.Model):
 class NewsArticle(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

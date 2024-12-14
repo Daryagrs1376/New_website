@@ -1,27 +1,27 @@
 from django.contrib import admin
 from .models import Article, media
 from .models import (
-    Category,
-    Keyword,
-    location,
-    Feature,
-    News,
-    SpecialFeature,
-    SpecialCategory,
-    NewsSpecialAttributes,
-    ReporterProfile,
-    Role,
-    User,
-    Advertising,
-    Setting,
-    Dashboard,
-    Subtitle,
-    Grouping,
-    PageView,
-    NewsArticle,
-    NewsCategory,
-    UserProfile,
-    Comment,
+Category,
+Keyword,
+location,
+Feature,
+News,
+SpecialFeature,
+SpecialCategory,
+NewsSpecialAttributes,
+ReporterProfile,
+Role,
+User,
+Advertising,
+Setting,
+Dashboard,
+Subtitle,
+Grouping,
+PageView,
+NewsArticle,
+NewsCategory,
+UserProfile,
+Comment,
 )
 
 class CommentAdmin(admin.ModelAdmin):
@@ -34,10 +34,23 @@ class CommentAdmin(admin.ModelAdmin):
     def delete_comments(self, request, queryset):
         queryset.delete()
         
-class NewscategoryAdmin(admin.ModelAdmin):
-    list_display = ('category_name', 'title', 'parent_category', 'status')
-    search_fields = ('category_name', 'title')
+class NewsCategoryAdmin(admin.ModelAdmin):
+    list_display = ('news_title', 'category_title', 'status', 'articles_count')
+    search_fields = ('category__title', 'news__title')
     list_filter = ('status',)
+
+    def news_title(self, obj):
+        return obj.news.title  
+    
+    def category_title(self, obj):
+        return obj.category.title
+
+    def articles_count(self, obj):
+        return obj.articles.count()  
+    
+    news_title.short_description = "عنوان خبر"
+    category_title.short_description = "عنوان دسته‌بندی"
+    articles_count.short_description = "تعداد مقالات"
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('title', 'name', 'description')
@@ -67,7 +80,7 @@ class NewsAdmin(admin.ModelAdmin):
 class RoleAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
-      
+
 class AdvertisingAdmin(admin.ModelAdmin):
     list_display = ('title', 'link', 'location', 'start_date', 'expiration_date', 'status')
     search_fields = ('title', 'location')
@@ -96,27 +109,8 @@ class PageViewAdmin(admin.ModelAdmin):
     list_filter = ('date',)
     search_fields = ('date',)
     
-# class UserAdmin(admin.ModelAdmin):
-#     list_display = ('username', 'email', 'phone_number', 'role', 'status')
-#     search_fields = ('username', 'email', 'phone_number')
-#     list_filter = ('role', 'status')
-
-# class OperationAdmin(admin.ModelAdmin):
-#     list_display = ('news', 'operation_type', 'performed_at')
-#     search_fields = ('news__title', 'operation_type')
-#     list_filter = ('operation_type', 'performed_at')
-
-# class UserProfileAdmin(admin.ModelAdmin):
-#     list_display = ('user', 'phone_number')
-#     search_fields = ('user__username', 'phone_number')
-
-class PageViewAdmin(admin.ModelAdmin):
-    list_display = ('date', 'total_visits', 'social_visits', 'bounce_rate')  # فیلدهایی که در لیست ادمین نمایش داده می‌شوند
-    list_filter = ('date',)
-    search_fields = ('date',)  
 
 admin.site.register(Comment)
-admin.site.register(NewsCategory)
 admin.site.register(Category)
 admin.site.register(Keyword)
 admin.site.register(location)
@@ -134,4 +128,4 @@ admin.site.register(Dashboard)
 admin.site.register(UserProfile)
 admin.site.register(PageView)
 admin.site.register(Subtitle)
-# admin.site.register(User, UserAdmin)
+admin.site.register(NewsCategory, NewsCategoryAdmin)

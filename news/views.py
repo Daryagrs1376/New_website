@@ -3,7 +3,7 @@ from .models import News
 from .serializers import CommentSerializer
 from .serializers import PostSerializer
 from rest_framework import generics
-from django_filters.rest_framework import DjangoFilterBackend # type: ignore
+from django_filters.rest_framework import DjangoFilterBackend 
 from .permissions import IsNotAuthenticated
 from.forms import SubtitleForm, AddCategoryForm
 from django.utils import timezone
@@ -34,18 +34,21 @@ from django.contrib.auth.decorators import login_required
 from news.models import NewsCategory, NewsArticle, Category, News
 from django.utils import timezone
 from random import randint
-from twilio.rest import Client # type: ignore
+from twilio.rest import Client 
 import os
 from django.conf import settings 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authentication import(
 SessionAuthentication,
-TokenAuthentication )
-from django.utils.http import (
+TokenAuthentication,
+)
+from django.utils.http import(
 urlsafe_base64_encode,
-urlsafe_base64_decode)
-from django.contrib.auth.tokens import (
-PasswordResetTokenGenerator)
+urlsafe_base64_decode,
+)
+from django.contrib.auth.tokens import(
+PasswordResetTokenGenerator,
+)
 from rest_framework.generics import(
 RetrieveAPIView,
 CreateAPIView,
@@ -58,17 +61,17 @@ PublicAdvertisingSerializer,
 AdminAdvertisingSerializer,
 RegisterSerializer,
 )
-from django.http import (
+from django.http import(
 HttpResponseForbidden,
 HttpResponse,
 JsonResponse,    
 )
-from django.shortcuts import (
+from django.shortcuts import(
 get_object_or_404, 
 redirect,
 render,   
 )
-from rest_framework.exceptions import (
+from rest_framework.exceptions import(
 ValidationError,
 PermissionDenied,  
 )
@@ -137,7 +140,6 @@ User,
 OTP, 
 Role,
 Post,
-# News,
 )          
 from .permissions import(
 IsOwner,
@@ -177,7 +179,7 @@ def like_article(request, article_id):
     
     return redirect('article_detail', article_id=article.id)
 
-@login_required  # این ویو باید فقط برای کاربران وارد شده در دسترس باشد
+@login_required 
 def report_comment(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
 
@@ -419,7 +421,6 @@ class PasswordResetRequestView(APIView):
             return Response({"message": "ایمیل بازیابی رمز عبور ارسال شد."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class PasswordResetView(APIView):
     def post(self, request, uidb64, token):
         try:
@@ -584,7 +585,6 @@ class AdvertisingDeleteView(generics.DestroyAPIView):
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
-    # serializer_class = UserSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['username', 'phone_number', 'role__name']  
     permission_classes = [AllowAny]   
@@ -604,42 +604,42 @@ class UserUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAdminUser]
 
-def edit_category(request, pk):
-    if request.method == "POST":
-        category = get_object_or_404(Category, pk=pk)
-        form = AddCategoryForm(request.POST, instance=category)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({"message": "Category edited successfully!"})
-    return JsonResponse({"error": "Only POST method is allowed"}, status=400)
+    def edit_category(request, pk):
+        if request.method == "POST":
+            category = get_object_or_404(Category, pk=pk)
+            form = AddCategoryForm(request.POST, instance=category)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({"message": "Category edited successfully!"})
+        return JsonResponse({"error": "Only POST method is allowed"}, status=400)
 
 
-def add_category(request):
-    if request.method == 'POST':
-        form = AddCategoryForm(request.POST)
-        if form.is_valid():
-            onvan = form.cleaned_data['onvan']
-            main_category = form.cleaned_data['main_category']
+    def add_category(request):
+        if request.method == 'POST':
+            form = AddCategoryForm(request.POST)
+            if form.is_valid():
+                onvan = form.cleaned_data['onvan']
+                main_category = form.cleaned_data['main_category']
 
-    else:
-        form = AddCategoryForm()
+        else:
+            form = AddCategoryForm()
 
-        return JsonResponse({"message": "Category added successfully!"})
-    return JsonResponse({"error": "Only POST method is allowed"}, status=400)
+            return JsonResponse({"message": "Category added successfully!"})
+        return JsonResponse({"error": "Only POST method is allowed"}, status=400)
 
-def category_list(request):
-    if request.method == 'GET':
-        categories = Category.objects.all()
-        serializer = CategorySerializer(categories, many= True)
-        return JsonResponse({"message": "Category list"})
-    
-    def post(self, request):
-        serializer = CategorySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-   
+    def category_list(request):
+        if request.method == 'GET':
+            categories = Category.objects.all()
+            serializer = CategorySerializer(categories, many= True)
+            return JsonResponse({"message": "Category list"})
+        
+        def post(self, request):
+            serializer = CategorySerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class CategoryDetail(APIView):
     def get(self, request, pk):
         try:
@@ -678,14 +678,12 @@ class AddCategory(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['POST'])
 @permission_classes([IsAdminUser])
 def delete_category(request, pk):
     category = get_object_or_404(Category, pk=pk)
     category.delete()
     return JsonResponse({"message": "Category deleted successfully!"})
-
 
 def subtitle_list(request):
     subtitles = Subtitle.objects.all()
@@ -718,31 +716,27 @@ class AddSubtitle(View):
             return redirect('subtitle-list')  
         return render(request, 'news/add_subtitle.html', {'form': form})  
 
-def edit_subtitle(request, pk):
-    subtitle = get_object_or_404(Subtitle, pk=pk)
-    if request.method == "POST":
-        form = SubtitleForm(request.POST, instance=subtitle)
-        if form.is_valid():
-            form.save()
-            return redirect('some_view_name')  
-    else:
-        form = SubtitleForm(instance=subtitle)
-    return render(request, 'template_name.html', {'form': form})
+    def edit_subtitle(request, pk):
+        subtitle = get_object_or_404(Subtitle, pk=pk)
+        if request.method == "POST":
+            form = SubtitleForm(request.POST, instance=subtitle)
+            if form.is_valid():
+                form.save()
+                return redirect('some_view_name')  
+        else:
+            form = SubtitleForm(instance=subtitle)
+        return render(request, 'template_name.html', {'form': form})
 
-def delete_subtitle(request, pk):
-    subtitle = get_object_or_404(Subtitle, pk=pk)
-    if request.method == "POST":
-        subtitle.delete()
-        return redirect('some_view_name') 
-    return render(request, 'template_name.html', {'subtitle': subtitle})
+    def delete_subtitle(request, pk):
+        subtitle = get_object_or_404(Subtitle, pk=pk)
+        if request.method == "POST":
+            subtitle.delete()
+            return redirect('some_view_name') 
+        return render(request, 'template_name.html', {'subtitle': subtitle})
 
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReporterProfileSerializer
-
-# class UserProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = ReporterProfile.objects.all()
-#     serializer_class = ReporterProfileSerializer
 
 class NewsList(APIView):
     def get(self, request):
@@ -799,10 +793,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-# class UserProfileViewSet(viewsets.ModelViewSet):
-#     queryset = UserProfile.objects.all()
-#     serializer_class = UserProfileSerializer
-
     @action(detail=False, methods=['patch'])
     def change_phone(self, request, pk=None):
         profile = self.get_object()
@@ -818,10 +808,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
         user.username = new_username
         user.save()
         return Response({"message": "Username updated successfully."})
-
-# class OperationViewSet(viewsets.ModelViewSet):
-#     queryset = Operation.objects.all()
-#     serializer_class = OperationSerializer
     
 class DailyStatsView(APIView):
     def get(self, request):
@@ -885,13 +871,6 @@ class NewsUpdateView(UpdateAPIView):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     permission_classes = [AllowAny]
-
-    # def get(self, request, *args, **kwargs):
-    #     query = request.GET.get("query")
-    #     # جستجو در اخبار بر اساس query
-    #     results = News.objects.filter(title__icontains=query)
-    #     serialized_results = ...  # سریالایز کردن خروجی
-    #     return Response({"message": "News search works!"})
     
 class NewsCreateView(generics.CreateAPIView):
     queryset = News.objects.all()
@@ -939,80 +918,3 @@ class PublicAdvertisingListView(ListAPIView):
 class CommentCreateView(generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
- 
-    
-# from rest_framework.decorators import api_view
-# from rest_framework.response import Response
-# from drf_yasg.utils import swagger_auto_schema
-# from drf_yasg import openapi
-# from .models import UserProfile
-# from django.db.utils import IntegrityError
-
-# @swagger_auto_schema(
-#     method='post', 
-#     request_body=openapi.Schema(
-#         type=openapi.TYPE_OBJECT,
-#         properties={
-#             'phone': openapi.Schema(type=openapi.TYPE_STRING, description='Phone number'),
-#         },
-#         required=['phone'],
-#     ),
-#     responses={200: openapi.Response('Successful Response', openapi.Schema(
-#         type=openapi.TYPE_OBJECT,
-#         properties={
-#             'message': openapi.Schema(type=openapi.TYPE_STRING, description='Response message'),
-#         },
-#     ))}
-# )
-# @api_view(['POST'])
-# def send_sms(request):
-#     phone = request.data.get('phone')
-#     if phone and request.user.is_anonymous:
-#         verification_code_number = randint(1000, 9999)
-#         verification_code = str(verification_code_number)
-#         user = None 
-#         try:
-#             user = User.objects.create_user(username=phone)
-#             UserProfile.objects.create(user=user,phone_number=phone,verification_code=verification_code)
-    
-#             try:
-#                 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-#                 message = client.messages.create(
-#                     body=f"Your verification code is {verification_code}",
-#                     from_=settings.TWILIO_PHONE_NUMBER,
-#                     to=phone
-#                 )
-#                 return Response({'message': f'User created and SMS verification sent to {phone}'})
-#             except Exception as e:
-#                 return Response({'message': f'Failed to send SMS: {str(e)}'}, status=500)
-           
-#         except IntegrityError:
-#             user = User.objects.get(username=phone)
-#             user.profile.verification_code = verification_code
-#             user.profile.save()
-#             return Response({'message': 'Waiting to receive verification code!'})
-#         return Response({'message': 'fill phone number'})
-
-# @swagger_auto_schema(
-#     method='post', 
-#     request_body=openapi.Schema(
-#         type=openapi.TYPE_OBJECT,
-#         properties={
-#             'phone': openapi.Schema(type=openapi.TYPE_STRING, description='Phone number'),
-#             'code': openapi.Schema(type=openapi.TYPE_STRING, description='Verification code'),
-#         },
-#         required=['phone', 'code'],
-#     ),
-#     responses={200: openapi.Response('Successful Response', openapi.Schema(
-#         type=openapi.TYPE_OBJECT,
-#         properties={
-#             'phone': openapi.Schema(type=openapi.TYPE_STRING, description='Phone number'),
-#             'code': openapi.Schema(type=openapi.TYPE_STRING, description='Verification code'),
-#         },
-#     ))}
-# )
-# @api_view(['POST'])
-# def verify_code(request):
-#     phone = request.data.get('phone')
-#     code = request.data.get('code')
-#     return Response({'phone': phone, 'code': code})
