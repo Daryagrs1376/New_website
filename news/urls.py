@@ -137,7 +137,7 @@ urlpatterns = [
     path('delete_subtitle/<int:subtitle_id>/', views.delete_subtitle, name='delete_subtitle'),
     # path('categories/edit/<int:pk>/', edit_category, name='edit-category'),
 
-    path('', include(router.urls)),
+    # path('', include(router.urls)),
     path('password-reset-request/', RequestPasswordResetAPIView.as_view(), name='password-reset-request'),
     path('password-reset/<uidb64>/<token>/', ResetPasswordAPIView.as_view(), name='password-reset'),
 ]
