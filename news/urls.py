@@ -9,6 +9,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
+from django.urls import re_path
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.views import(
 TokenObtainPairView,
@@ -55,7 +56,6 @@ from .views import (
     create_news,
     UserProfileDetailView,
 )
-
 from .views import UserProfileDetailView 
 from .views import add_subtitle
 from .views import delete_subtitle
