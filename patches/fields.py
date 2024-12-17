@@ -1,5 +1,7 @@
 from decimal import Decimal
 from haystack.exceptions import SearchFieldError
+from datetime import timezone as utc
+
 
 class SearchField:
     def prepare(self, value):
