@@ -60,6 +60,8 @@ from .views import UserProfileDetailView
 from .views import add_subtitle
 from .views import delete_subtitle
 # from .views import edit_category 
+from news.views import home_view
+from django.http import HttpResponse
 
 
 schema_view = get_schema_view(
@@ -79,9 +81,15 @@ router = DefaultRouter()
 router.register(r'news', NewsViewSet, basename='news')
 router.register(r'categories', CategoryViewSet, basename='categories')
 
+def homepage(request):
+    return HttpResponse("This is the homepage of your news site.")
+
 urlpatterns = [
+    path('', homepage, name='homepage'),
+
     path('admin/', admin.site.urls),
-    
+    path('', home_view, name='home'),
+        
     path('send-sms/',views.send_sms),
     path('verify/', views.verify_otp, name='verify_otp'),
             
@@ -135,7 +143,9 @@ urlpatterns = [
     path('custom-register/', RegisterView.as_view(), name='custom-register'),
 
     path('delete_subtitle/<int:subtitle_id>/', views.delete_subtitle, name='delete_subtitle'),
-    
+
+    path('news/<int:id>/', views.news_detail, name='news_detail')
+
     # path('', include(router.urls)),
     path('password-reset-request/', RequestPasswordResetAPIView.as_view(), name='password-reset-request'),
     path('password-reset/<uidb64>/<token>/', ResetPasswordAPIView.as_view(), name='password-reset'),
