@@ -344,8 +344,7 @@ class PageView(models.Model):
     page_views = models.JSONField()  
     
 class Comment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    likes = models.IntegerField(default=0)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)    likes = models.IntegerField(default=0)
     dislikes = models.IntegerField(default=0) 
     news = models.ForeignKey(News, related_name='comments', on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)  
