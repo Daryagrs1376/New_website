@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils import timezone
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth import get_user_model
 from .models import(
@@ -17,6 +18,8 @@ PageView,
 )
 
 User = get_user_model()
+
+some_time = timezone.now()
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
