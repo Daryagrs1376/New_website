@@ -1,7 +1,12 @@
+from django.db import models
+from haystack import indexes
+from whoosh import index
+from whoosh.fields import Schema, TEXT
+import os
+from whoosh.index import create_in
 import uuid
 import random
 from django import forms
-from django.db import models
 from django.apps import apps
 from django.conf import settings
 from django.utils import timezone
@@ -169,11 +174,17 @@ class News(models.Model):
     published_at = models.DateTimeField(null=True, blank=True)
     keywords = models.ManyToManyField('Keyword', blank=True, related_name='news')
     is_approved = models.BooleanField(default=False)
-    news = News.objects.filter(id=id, is_approved=True).first()
-
+    # news = News.objects.filter(id=id, is_approved=True).first()
+    
     def __str__(self):
         return self.title
-     
+    
+class NewsIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template=True)
+
+    def get_model(self):
+        return News
+        
 class SpecialFeature(models.Model):
     feature_name = models.CharField(max_length=50)
 

@@ -87,7 +87,7 @@ def homepage(request):
 urlpatterns = [
     path('', homepage, name='homepage'),
 
-    path('admin/', admin.site.urls),
+    path('admin/', views.admin_view, name='admin'), 
     path('', home_view, name='home'),
         
     path('send-sms/',views.send_sms),
@@ -144,7 +144,7 @@ urlpatterns = [
 
     path('delete_subtitle/<int:subtitle_id>/', views.delete_subtitle, name='delete_subtitle'),
 
-    path('news/<int:id>/', views.news_detail, name='news_detail')
+    path('news/<int:id>/', views.news_detail, name='news_detail'),
 
     # path('', include(router.urls)),
     path('password-reset-request/', RequestPasswordResetAPIView.as_view(), name='password-reset-request'),

@@ -1,3 +1,4 @@
+from news import views 
 from .utils import send_sms
 from .models import News
 from .serializers import CommentSerializer
@@ -154,6 +155,14 @@ User = get_user_model()
 
 def home_view(request):
     return HttpResponse("<h1>Welcome to the Homepage!</h1>")
+
+def admin_view(request):
+    return HttpResponse("Admin view content goes here")
+
+def create_search_index(request):
+    # ایجاد ایندکس (این کد فقط یک‌بار باید اجرا شود)
+    News.create_index()
+    return render(request, 'home.html')
 
 def news_detail(request, id):
     news = get_object_or_404(News, id=id, is_approved=True)

@@ -8,10 +8,9 @@ drf-yasg==1.21.8
 django-extensions==3.2.3
 djangorestframework-simplejwt==5.3.1
 pillow==11.0.0
-django-filters==23.1
-corsheaders==4.0.0
-rest_framework.authtoken==3.15.0
+django-filter==23.2
+# corsheaders==4.0.0
+# rest_framework.authtoken==3.15.0
 celery==5.2.3
-django-haystack==3.0
-kavenegar==1.2.4
-django-haystack
+kavenegar==1.1.2
+whoosh==2.7.4

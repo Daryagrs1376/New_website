@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'corsheaders',
+    'haystack',
     'drf_yasg',
     'django_extensions',
     'news', 
@@ -85,6 +86,12 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    },
+}
 
 ROOT_URLCONF = 'news_website.urls'
 
@@ -206,13 +213,6 @@ SWAGGER_SETTINGS = {
             'in': 'header',
             'description': "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
         }
-    },
-}
-
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
     },
 }
 
