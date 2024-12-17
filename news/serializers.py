@@ -15,12 +15,19 @@ UserProfile,
 Advertising,
 Comment,
 PageView,
+NewsComment,
 )
 
 User = get_user_model()
 
 some_time = timezone.now()
 
+
+class NewsCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewsComment
+        fields = ['id', 'content', 'news', 'user', 'created_at']
+        
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment

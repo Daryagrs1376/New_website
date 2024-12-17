@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from django.utils.timezone import now, timedelta
 from django.views.generic.dates import ArchiveIndexView
 from django.views import View
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
@@ -112,6 +112,7 @@ ReporterProfileSerializer,
 NewsSerializer,
 NewsEditSerializer,
 UserCreateSerializer,
+NewsCommentSerializer,
 AdminAdvertisingSerializer,
 PublicAdvertisingSerializer,
 NewsDetailSerializer,
@@ -133,6 +134,7 @@ PasswordResetToken,
 PageView,
 Advertising,
 Comment,
+NewsComment,
 UserProfile,
 Setting,
 Report,
@@ -153,21 +155,6 @@ from .models import News
 
 
 User = get_user_model()
-
-# def home_view(request):
-#     return HttpResponse("<h1>Welcome to the Homepage!</h1>")
-
-# def admin_view(request):
-#     return HttpResponse("Admin view content goes here")
-
-# def create_search_index(request):
-#     # ایجاد ایندکس (این کد فقط یک‌بار باید اجرا شود)
-#     News.create_index()
-#     return render(request, 'home.html')
-
-# def news_detail(request, id):
-#     news = get_object_or_404(News, id=id, is_approved=True)
-#     return render(request, 'news/detail.html', {'news': news})
 
 def article_detail(request, article_id):
     article = get_object_or_404(NewsArticle, pk=article_id)
@@ -955,3 +942,11 @@ class PublicAdvertisingListView(ListAPIView):
 class CommentCreateView(generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    
+class NewsCommentListCreate(generics.ListCreateAPIView):
+    queryset = NewsComment.objects.all()
+    serializer_class = NewsCommentSerializer
+
+class NewsCommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = NewsComment.objects.all()
+    serializer_class = NewsCommentSerializer

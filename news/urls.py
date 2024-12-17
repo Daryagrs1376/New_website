@@ -139,7 +139,8 @@ urlpatterns = [
 
     path('delete_subtitle/<int:subtitle_id>/', views.delete_subtitle, name='delete_subtitle'),
 
-    # path('news/<int:id>/', views.news_detail, name='news_detail'),
+    path('comments/<int:pk>/', views.NewsCommentDetail.as_view(), name='newscomment-detail'),
+    path('comments/', views.NewsCommentListCreate.as_view(), name='newscomment-list-create'),
 
     # path('', include(router.urls)),
     path('password-reset-request/', RequestPasswordResetAPIView.as_view(), name='password-reset-request'),

@@ -19,11 +19,19 @@ Subtitle,
 Grouping,
 PageView,
 NewsArticle,
+NewsComment,
 NewsCategory,
 UserProfile,
 Comment,
 )
 
+
+@admin.register(NewsComment)
+class NewsCommentAdmin(admin.ModelAdmin):
+    list_display = ('content', 'news', 'user', 'created_at')
+    search_fields = ('content', 'user__username', 'news__title')
+    list_filter = ('created_at',)
+    
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['user', 'news_article', 'approved', 'created_at']
     actions = ['approve_comments', 'delete_comments']

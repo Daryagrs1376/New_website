@@ -3,10 +3,18 @@ from .models import(
 ReporterProfile,
 Subtitle,
 Comment,
+NewsComment,
 User,
 )
 
 
+class NewsCommentForm(forms.ModelForm):
+    class Meta:
+        model = NewsComment
+        fields = ['content', 'news', 'user']
+
+    content = forms.CharField(widget=forms.Textarea, label='Your Comment')
+    
 class ReporterProfileForm(forms.ModelForm):
     class Meta:
         model = ReporterProfile
