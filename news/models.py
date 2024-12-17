@@ -1,6 +1,5 @@
 import uuid
 import random
-from haystack import indexes 
 from django import forms
 from django.db import models
 from django.apps import apps
@@ -17,10 +16,19 @@ Group,
 Permission,
 PermissionsMixin,
 )
+from whoosh.fields import Schema, TEXT
+from whoosh.index import create_in
+
 
 User = get_user_model()
 
+class MyModel(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
 
+    class Meta:
+        app_label = 'myapp'
+        
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
@@ -161,6 +169,7 @@ class News(models.Model):
     published_at = models.DateTimeField(null=True, blank=True)
     keywords = models.ManyToManyField('Keyword', blank=True, related_name='news')
     is_approved = models.BooleanField(default=False)
+    news = News.objects.filter(id=id, is_approved=True).first()
 
     def __str__(self):
         return self.title

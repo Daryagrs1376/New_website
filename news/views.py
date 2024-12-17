@@ -147,8 +147,17 @@ from .permissions import(
 IsOwner,
 IsAdminUserOrReadOnly,
 )
+from .models import News
+
 
 User = get_user_model()
+
+def home_view(request):
+    return HttpResponse("<h1>Welcome to the Homepage!</h1>")
+
+def news_detail(request, id):
+    news = get_object_or_404(News, id=id, is_approved=True)
+    return render(request, 'news/detail.html', {'news': news})
 
 def article_detail(request, article_id):
     article = get_object_or_404(NewsArticle, pk=article_id)
