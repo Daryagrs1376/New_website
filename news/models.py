@@ -381,11 +381,12 @@ class NewsArticle(models.Model):
 
     def __str__(self):
         return self.title
+    
+class NewsComment(models.Model):
+    content = models.TextField()
+    news = models.ForeignKey('News', on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-# class User(models.Model):
-#     phone_number = models.CharField(max_length=15, unique=True)
-#     role = models.CharField(max_length=50, choices=[('admin', 'Admin'), ('reporter', 'Reporter')])
-#     status = models.BooleanField(default=True)
-
-#     def __str__(self):
-#         return self.phone_number
+    def __str__(self):
+        return self.content
