@@ -1,4 +1,5 @@
 from news import views 
+from datetime import timezone as utc
 from .utils import send_sms
 from .models import News
 from .serializers import CommentSerializer
