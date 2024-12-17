@@ -86,12 +86,6 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
-    },
-}
 
 ROOT_URLCONF = 'news_website.urls'
 
@@ -185,15 +179,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-# # REST framework settings (AllowAny gives public access to API endpoints)
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ],
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',  # Public access for all users
-#     ],
-# }
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7), 
@@ -238,5 +223,11 @@ CELERY_BEAT_SCHEDULE = {
     'publish_scheduled_articles': {
         'task': 'news.tasks.publish_scheduled_articles',
         'schedule': crontab(minute=0, hour=0),  # اجرای روزانه در نیمه‌شب
+    },
+}
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',  # استفاده از Whoosh
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),  # مسیر ذخیره ایندکس‌ها
     },
 }
