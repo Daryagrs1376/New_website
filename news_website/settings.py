@@ -86,7 +86,6 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
-
 ROOT_URLCONF = 'news_website.urls'
 
 TEMPLATES = [
@@ -214,7 +213,7 @@ LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # برای استفاده از Redis به عنوان broker
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
@@ -222,12 +221,12 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_BEAT_SCHEDULE = {
     'publish_scheduled_articles': {
         'task': 'news.tasks.publish_scheduled_articles',
-        'schedule': crontab(minute=0, hour=0),  # اجرای روزانه در نیمه‌شب
+        'schedule': crontab(minute=0, hour=0), 
     },
 }
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',  # استفاده از Whoosh
-        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),  # مسیر ذخیره ایندکس‌ها
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine', 
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'), 
     },
 }

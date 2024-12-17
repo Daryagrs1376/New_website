@@ -174,7 +174,6 @@ class News(models.Model):
     published_at = models.DateTimeField(null=True, blank=True)
     keywords = models.ManyToManyField('Keyword', blank=True, related_name='news')
     is_approved = models.BooleanField(default=False)
-    # news = News.objects.filter(id=id, is_approved=True).first()
     
     def __str__(self):
         return self.title
@@ -349,7 +348,7 @@ class Comment(models.Model):
     dislikes = models.IntegerField(default=0) 
     news = models.ForeignKey(News, related_name='comments', on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)  
-    news_article = models.ForeignKey('NewsArticle', on_delete=models.CASCADE)  
+    news_article = models.ForeignKey('NewsArticle', on_delete=models.CASCADE)
     content = models.TextField()  
     created_at = models.DateTimeField(auto_now_add=True)  
     approved = models.BooleanField(default=False)  
@@ -382,3 +381,11 @@ class NewsArticle(models.Model):
 
     def __str__(self):
         return self.title
+
+# class User(models.Model):
+#     phone_number = models.CharField(max_length=15, unique=True)
+#     role = models.CharField(max_length=50, choices=[('admin', 'Admin'), ('reporter', 'Reporter')])
+#     status = models.BooleanField(default=True)
+
+#     def __str__(self):
+#         return self.phone_number

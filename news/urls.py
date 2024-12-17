@@ -51,7 +51,6 @@ from .views import (
     subtitle_list,
     add_subtitle,
     delete_subtitle,
-    # edit_category,  
     delete_category,
     create_news,
     UserProfileDetailView,
@@ -59,8 +58,6 @@ from .views import (
 from .views import UserProfileDetailView 
 from .views import add_subtitle
 from .views import delete_subtitle
-# from .views import edit_category 
-from news.views import home_view
 from django.http import HttpResponse
 
 
@@ -86,9 +83,7 @@ def homepage(request):
 
 urlpatterns = [
     path('', homepage, name='homepage'),
-
-    path('admin/', views.admin_view, name='admin'), 
-    path('', home_view, name='home'),
+    path('api/', include(router.urls)),
         
     path('send-sms/',views.send_sms),
     path('verify/', views.verify_otp, name='verify_otp'),
@@ -144,7 +139,7 @@ urlpatterns = [
 
     path('delete_subtitle/<int:subtitle_id>/', views.delete_subtitle, name='delete_subtitle'),
 
-    path('news/<int:id>/', views.news_detail, name='news_detail'),
+    # path('news/<int:id>/', views.news_detail, name='news_detail'),
 
     # path('', include(router.urls)),
     path('password-reset-request/', RequestPasswordResetAPIView.as_view(), name='password-reset-request'),
