@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from django.db import models
 from haystack import indexes
 from whoosh import index
@@ -27,6 +28,11 @@ from whoosh.index import create_in
 
 User = get_user_model()
 
+
+class Tokens(models.Model):
+    token = models.CharField(max_length=100)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    
 class MyModel(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -163,7 +169,8 @@ class Grouping(models.Model):
         return self.Grouping_name
     
 class News(models.Model):
-    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authored_news')
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reported_news')
     categories = models.ManyToManyField('Category', through='NewsCategory', related_name='news_categories')
     title = models.CharField(max_length=255)
     content = models.TextField()
@@ -171,10 +178,11 @@ class News(models.Model):
     short_description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    published_at = models.DateTimeField(null=True, blank=True)
+    published_date = models.DateTimeField()
     keywords = models.ManyToManyField('Keyword', blank=True, related_name='news')
     is_approved = models.BooleanField(default=False)
-    
+    status = models.CharField(max_length=20)
+
     def __str__(self):
         return self.title
     
@@ -302,13 +310,15 @@ class Advertising(models.Model):
         ('sidebar', 'Sidebar'),
         ('footer', 'Footer'),
     ]
-    title  = models.CharField(max_length=255)
+    title = models.CharField(max_length=200)
     link = models.URLField()
     banner = models.ImageField(upload_to='banners/')
     location = models.CharField(max_length=50, choices=LOCATION_CHOICES)
-    start_date = models.DateField()
-    expiration_date = models.DateField()
-    status = models.BooleanField(null=True, blank=True, default=None)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    expiration_date = models.DateTimeField(default=datetime.now() + timedelta(days=30))
+    description = models.TextField()
+    status = models.CharField(max_length=50, choices=[("active", "Active"), ("inactive", "Inactive")])
 
     def __str__(self):
         return self.title 
