@@ -304,6 +304,9 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+def default_expiration_date():
+    return now() + timedelta(days=30)
+
 class Advertising(models.Model):
     LOCATION_CHOICES = [
         ('header', 'Header'),
@@ -315,8 +318,7 @@ class Advertising(models.Model):
     banner = models.ImageField(upload_to='banners/')
     location = models.CharField(max_length=50, choices=LOCATION_CHOICES)
     start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    expiration_date = models.DateTimeField(default=datetime.now() + timedelta(days=30))
+    expiration_date = models.DateTimeField(default=default_expiration_date)
     description = models.TextField()
     status = models.CharField(max_length=50, choices=[("active", "Active"), ("inactive", "Inactive")])
 
