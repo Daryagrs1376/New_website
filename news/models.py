@@ -305,7 +305,7 @@ class User(AbstractUser):
         return self.username
 
 def default_expiration_date():
-    return now() + timedelta(days=30)
+    return timezone.now() + timedelta(days=30)
 
 class Advertising(models.Model):
     LOCATION_CHOICES = [
@@ -329,7 +329,7 @@ class Advertising(models.Model):
     def is_active(self):
         """Check if the advertisement is active and not expired."""
         return self.status and self.expiration_date >= now().date()
-    
+
 class Setting(models.Model):
     subcategory_name = models.CharField(max_length=255)
     status = models.BooleanField(default=True)

@@ -79,16 +79,16 @@ class Command(BaseCommand):
         self.stdout.write('در حال ایجاد تبلیغات جعلی...')
         for _ in range(5):  # تعداد تبلیغات جعلی
             Advertising.objects.create(
-                title=fake.sentence(nb_words=5),
+                title=fake.sentence(),
                 link=fake.url(),
                 banner=fake.image_url(),
-                location=choice(['header', 'sidebar', 'footer']),
+                location=fake.random_element(['header', 'sidebar', 'footer']),
                 start_date=fake.date_time_this_year(),
-                end_date=fake.date_time_this_year() + timedelta(days=randint(1, 30)),
-                expiration_date=fake.date_time_this_year() + timedelta(days=randint(31, 60)),
-                description=fake.text(max_nb_chars=300),
-                status=choice(['فعال', 'غیرفعال'])
+                expiration_date=fake.date_time_this_year(),
+                description=fake.text(),
+                status=fake.random_element(['active', 'inactive']),
             )
+
         self.stdout.write('تبلیغات جعلی ایجاد شد!')
 
         self.stdout.write('فرایند ایجاد داده‌های جعلی به اتمام رسید!')
