@@ -19,9 +19,7 @@ NewsComment,
 )
 
 User = get_user_model()
-
 some_time = timezone.now()
-
 
 class NewsCommentSerializer(serializers.ModelSerializer):
     class Meta:

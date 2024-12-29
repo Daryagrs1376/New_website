@@ -11,6 +11,7 @@ from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 from django.urls import re_path
 from django.utils.translation import gettext_lazy as _
+# from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_simplejwt.views import(
 TokenObtainPairView,
 TokenRefreshView,
@@ -57,6 +58,7 @@ from .views import (
 )
 from .views import UserProfileDetailView 
 from .views import add_subtitle
+from .views import SubtitleDetailView
 from .views import delete_subtitle
 from django.http import HttpResponse
 
@@ -114,13 +116,13 @@ urlpatterns = [
     path('advertisements/', PublicAdvertisingListView.as_view(), name='public-advertising-list'),
 
     path('categories/add/', AddCategory.as_view(), name='category-add'),
-    # path('categories/edit/<int:pk>/', edit_category, name='edit-category'),
     path('categories/<int:pk>/delete/', delete_category, name='category-delete'),
     path('categories/', CategoryListView.as_view(), name='category-list'),
     path('categories/<int:id>/', CategoryDetailView.as_view(), name='category-detail'),
 
     path('subtitles/', subtitle_list, name='subtitle-list'),
     path('subtitles/add/', add_subtitle, name='subtitle-add'),
+    path('subtitles/<int:id>/', SubtitleDetailView.as_view(), name='subtitle-detail'),
     path('subtitles/<int:pk>/edit/', add_subtitle, name='subtitle-edit'),
     path('subtitles/<int:pk>/delete/', delete_subtitle, name='subtitle-delete'),
 
@@ -146,3 +148,5 @@ urlpatterns = [
     path('password-reset-request/', RequestPasswordResetAPIView.as_view(), name='password-reset-request'),
     path('password-reset/<uidb64>/<token>/', ResetPasswordAPIView.as_view(), name='password-reset'),
 ]
+
+# urlpatterns = format_suffix_patterns(urlpatterns)

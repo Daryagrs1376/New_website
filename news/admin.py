@@ -1,11 +1,12 @@
 from django.contrib import admin
-from .models import Article, media
 from .models import (
 Category,
 Keyword,
 location,
+Media,
 Feature,
 News,
+Article,
 SpecialFeature,
 SpecialCategory,
 NewsSpecialAttributes,
@@ -26,7 +27,6 @@ Comment,
 )
 
 
-@admin.register(NewsComment)
 class NewsCommentAdmin(admin.ModelAdmin):
     list_display = ('content', 'news', 'user', 'created_at')
     search_fields = ('content', 'user__username', 'news__title')
@@ -117,7 +117,7 @@ class PageViewAdmin(admin.ModelAdmin):
     list_filter = ('date',)
     search_fields = ('date',)
     
-
+admin.site.register(NewsComment)
 admin.site.register(Comment)
 admin.site.register(Category)
 admin.site.register(Keyword)

@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 from sms_service import send_sms 
 import random
 
-
 app = Flask(__name__)
 
 @app.route('/send-code', methods=['POST'])

@@ -7,4 +7,4 @@ class NewsConfig(AppConfig):
 
     def ready(self):
         from haystack.management.commands.update_index import Command
-        Command().handle()  # این متد به روزرسانی ایندکس‌ها را انجام می‌دهد
+        Command().handle()  

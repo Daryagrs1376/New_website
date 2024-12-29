@@ -7,7 +7,6 @@ from .serializers import PostSerializer
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend 
 from .permissions import IsNotAuthenticated
-from.forms import SubtitleForm
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.utils.timezone import now, timedelta
@@ -64,6 +63,7 @@ UserProfileSerializer,
 PublicAdvertisingSerializer,
 AdminAdvertisingSerializer,
 RegisterSerializer,
+SubtitleSerializer,
 )
 from django.http import(
 HttpResponseForbidden,
@@ -635,7 +635,6 @@ class UserUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
                 return JsonResponse({"message": "Category edited successfully!"})
         return JsonResponse({"error": "Only POST method is allowed"}, status=400)
 
-
     def add_category(request):
         if request.method == 'POST':
             form = AddCategoryForm(request.POST)
@@ -692,6 +691,7 @@ class CategoryDetail(APIView):
         
         category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
 class AddCategory(APIView):
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
@@ -707,9 +707,10 @@ def delete_category(request, pk):
     category.delete()
     return JsonResponse({"message": "Category deleted successfully!"})
 
+@api_view(['GET'])
 def subtitle_list(request):
     subtitles = Subtitle.objects.all()
-    return render(request, 'subtitle_list.html', {'subtitles': subtitles})
+    return Response({"subtitles": [subtitle.title for subtitle in subtitles]})
 
 def add_subtitle(request):
     if request.method == 'POST':
@@ -950,3 +951,23 @@ class NewsCommentListCreate(generics.ListCreateAPIView):
 class NewsCommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = NewsComment.objects.all()
     serializer_class = NewsCommentSerializer
+    
+class SubtitleDetailView(APIView):
+    def get(self, request, id):
+        try:
+            subtitle = Subtitle.objects.get(id=id)
+            serializer = SubtitleSerializer(subtitle)
+            return Response(serializer.data)
+        except Subtitle.DoesNotExist:
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, id):
+        try:
+            subtitle = Subtitle.objects.get(id=id)
+            serializer = SubtitleSerializer(subtitle, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Subtitle.DoesNotExist:
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)

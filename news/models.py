@@ -2,17 +2,18 @@ from datetime import datetime, timedelta
 from django.db import models
 from haystack import indexes
 from whoosh import index
+from whoosh.index import create_in
 from whoosh.fields import Schema, TEXT
 import os
-from whoosh.index import create_in
 import uuid
 import random
+from django.contrib.auth.models import User
 from django import forms
 from django.apps import apps
 from django.conf import settings
 from django.utils import timezone
 from django.utils.timezone import now
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from django.contrib.auth.models import(
 AbstractBaseUser,
 BaseUserManager,
@@ -22,11 +23,8 @@ Group,
 Permission,
 PermissionsMixin,
 )
-from whoosh.fields import Schema, TEXT
-from whoosh.index import create_in
 
-
-User = get_user_model()
+# User = get_user_model()
 
 
 class Tokens(models.Model):
@@ -51,12 +49,12 @@ class Article(models.Model):
     def __str__(self):
         return self.title
     
-class media(models.Model):
+class Media(models.Model):
     file = models.FileField(upload_to='uploads/')
-    article = models.ForeignKey(Article, related_name='media', on_delete=models.CASCADE)
+    article = models.ForeignKey('Article', related_name='media', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.file.name}" 
+        return f"{self.file.name}"
 
 class NewsIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
@@ -327,7 +325,6 @@ class Advertising(models.Model):
 
     @property
     def is_active(self):
-        """Check if the advertisement is active and not expired."""
         return self.status and self.expiration_date >= now().date()
 
 class Setting(models.Model):
@@ -386,10 +383,9 @@ class Like(models.Model):
         return f"Like by {self.user.username} on {self.news_article.title}"
 
 class NewsArticle(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=255)
     content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
