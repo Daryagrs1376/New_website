@@ -83,7 +83,7 @@ router.register(r'categories', CategoryViewSet, basename='categories')
 #     return HttpResponse("This is the homepage of your news site.")
 
 urlpatterns = [
-    path('', homepage, name='homepage'),
+    # path('', homepage, name='homepage'),
     # path('api/', include(router.urls)),
         
     path('send-sms/',views.send_sms),
