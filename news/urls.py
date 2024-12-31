@@ -40,6 +40,7 @@ DailyStatsView,
 WeeklyStatsView,
 ProtectedView,
 AdminAdvertisingListView,
+UserProfileDetailView,
 PublicAdvertisingListView,
 PasswordResetRequestView,
 PasswordResetView,
@@ -55,7 +56,6 @@ edit_category,
 delete_category,
 create_news,
 )
-from .views import UserProfileDetailView 
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -122,8 +122,8 @@ urlpatterns = [
     path('protected/', ProtectedView.as_view(), name='protected-view'),
     
     path('register/', UserRegistrationView.as_view(), name='user-registration'),
-    p
-    ath('custom-register/', RegisterView.as_view(), name='custom-register'),
+    
+    path('custom-register/', RegisterView.as_view(), name='custom-register'),
     
     path('', include(router.urls)),
     path('api/', include(router.urls)), 

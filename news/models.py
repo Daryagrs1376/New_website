@@ -6,6 +6,7 @@ from django.db import models
 from django.apps import apps
 from django.conf import settings
 from django.utils import timezone
+from datetime import datetime, timedelta
 from django.utils.timezone import now
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import(
@@ -292,6 +293,9 @@ class User(AbstractUser):
         verbose_name = "User"
         verbose_name_plural = "Users"
 
+def default_expiration_date():
+    return datetime.now() + timedelta(days=30)  
+
 class Advertising(models.Model):
     LOCATION_CHOICES = [
         ('header', 'Header'),
@@ -303,7 +307,7 @@ class Advertising(models.Model):
     banner = models.ImageField(upload_to='banners/')
     location = models.CharField(max_length=50, choices=LOCATION_CHOICES)
     start_date = models.DateField()
-    expiration_date = models.DateField()
+    expiration_date = models.DateTimeField(default=default_expiration_date)
     status = models.BooleanField(null=True, blank=True, default=None)
 
     def __str__(self):
