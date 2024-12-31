@@ -79,12 +79,12 @@ router = DefaultRouter()
 router.register(r'news', NewsViewSet, basename='news')
 router.register(r'categories', CategoryViewSet, basename='categories')
 
-# def homepage(request):
-#     return HttpResponse("This is the homepage of your news site.")
+def homepage(request):
+    return HttpResponse("This is the homepage of your news site.")
 
 urlpatterns = [
-    # path('', homepage, name='homepage'),
-    # path('api/', include(router.urls)),
+    path('', homepage, name='homepage'),
+    path('api/', include(router.urls)),
         
     path('send-sms/',views.send_sms),
     path('verify/', views.verify_otp, name='verify_otp'),
@@ -144,6 +144,7 @@ urlpatterns = [
     path('comments/<int:pk>/', views.NewsCommentDetail.as_view(), name='newscomment-detail'),
     path('comments/', views.NewsCommentListCreate.as_view(), name='newscomment-list-create'),
 
+    # path('', include(router.urls)),
     path('password-reset-request/', RequestPasswordResetAPIView.as_view(), name='password-reset-request'),
     path('password-reset/<uidb64>/<token>/', ResetPasswordAPIView.as_view(), name='password-reset'),
 ]
