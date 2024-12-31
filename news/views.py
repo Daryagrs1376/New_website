@@ -1,15 +1,11 @@
 from news import views 
 from datetime import timezone as utc
 from .utils import send_sms
-from .models import News
-from .serializers import CommentSerializer
-from .serializers import PostSerializer
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend 
 from .permissions import IsNotAuthenticated
 from django.utils import timezone
-from datetime import datetime, timedelta
-from django.utils.timezone import now, timedelta
+from django.utils.timezone import now, timedelta, now
 from django.views.generic.dates import ArchiveIndexView
 from django.views import View
 from rest_framework import status, generics
@@ -20,13 +16,11 @@ from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from.forms import SubtitleForm, AddCategoryForm, CommentForm
-from .models import Advertising
 from datetime import datetime, timedelta
-from django.utils.timezone import now
-from django.views import View
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
@@ -58,13 +52,6 @@ CreateAPIView,
 UpdateAPIView,
 ListAPIView,
 )
-from .serializers import(
-UserProfileSerializer,
-PublicAdvertisingSerializer,
-AdminAdvertisingSerializer,
-RegisterSerializer,
-SubtitleSerializer,
-)
 from django.http import(
 HttpResponseForbidden,
 HttpResponse,
@@ -95,21 +82,24 @@ permissions,
 from rest_framework.permissions import(
 AllowAny, 
 IsAuthenticatedOrReadOnly,
-IsAuthenticated,
 IsAdminUser,
 IsAuthenticated, 
-IsAdminUser, 
 )
 from .serializers import(
 AdvertisingSerializer,
 AdvertisingCreateUpdateSerializer,
-NewsSerializer,
+CommentSerializer,
 SettingSerializer,
 SettingCreateUpdateSerializer,
 PageViewSerializer,
 CategorySerializer,
 ReporterProfileSerializer,
 NewsSerializer,
+UserProfileSerializer,
+PublicAdvertisingSerializer,
+AdminAdvertisingSerializer,
+RegisterSerializer,
+SubtitleSerializer,
 NewsEditSerializer,
 UserCreateSerializer,
 NewsCommentSerializer,
@@ -125,7 +115,6 @@ PostSerializer,
 )
 from.models import(
 Comment,
-Advertising,
 Category,
 Subtitle,
 ReporterProfile,
@@ -140,18 +129,16 @@ Setting,
 Report,
 User, 
 Like,
-User,
-OTP, 
-User,
-OTP, 
+OTP,
+News,
 Role,
 Post,
 )          
 from .permissions import(
 IsOwner,
+IsNotAuthenticated,
 IsAdminUserOrReadOnly,
 )
-from .models import News
 
 
 User = get_user_model()
@@ -187,6 +174,7 @@ def like_article(request, article_id):
     
     return redirect('article_detail', article_id=article.id)
 
+@login_required 
 @login_required 
 def report_comment(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
@@ -238,9 +226,9 @@ def delete_subtitle(request, pk):
 def edit_subtitle(request, pk):
     subtitle = get_object_or_404(Subtitle, pk=pk)
     if request.method == 'POST':
-        subtitle.text = request.POST['text']  # فرض کنید شما در فرم ویرایش، فیلدی به نام 'text' دارید
+        subtitle.text = request.POST['text']
         subtitle.save()
-        return HttpResponseRedirect(reverse('subtitle-list'))  # مسیر نمایش لیست زیرنویس‌ها بعد از ویرایش
+        return HttpResponseRedirect(reverse('subtitle-list')) 
     return render(request, 'news/edit_subtitle.html', {'subtitle': subtitle})
 
 def verify_otp(request):
@@ -512,7 +500,6 @@ class AdvertisingViewSet(viewsets.ModelViewSet):
     queryset = Advertising.objects.all()
     serializer_class = AdvertisingSerializer
     authentication_classes = [JWTAuthentication]
-    
     permission_classes = [AllowAny]
     
     def get_permissions(self):

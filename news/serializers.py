@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from .models import(
 News,
 Setting,
-Comment,
 Role,
 Post,
 Keyword,
@@ -29,7 +28,6 @@ class NewsCommentSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-
         fields = ['id', 'user', 'news_article', 'text','content', 'created_at']
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -154,24 +152,7 @@ class NewsSerializer(serializers.ModelSerializer):
     keywords = serializers.CharField()
     class Meta:
         model = News
-        # fields = [
         fields = '__all__'
-            # 'id',
-            # 'reporter',
-            # 'categories'
-            # 'title'
-            # 'content'
-            # 'short_description',
-            # 'news_text'
-            # 'created_at'
-            # 'updated_at'
-            # 'published_at',
-            # 'status'
-            # 'date'
-            # 'keywords'
-            # 'is_approved',
-        # ]
-        
         read_only_fields = ['id', 'created_at', 'updated_at']
 
     def validate(self, data):
@@ -223,6 +204,7 @@ class AdvertisingSerializer(serializers.ModelSerializer):
             'id', 'title', 'link', 'banner', 'location',
             'start_date', 'expiration_date', 'status'
         ]    
+
 class AdvertisingCreateUpdateSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
     class Meta:

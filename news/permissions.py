@@ -4,7 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import BasePermission, AllowAny
 
-
 class IsNotAuthenticated(BasePermission):
     def has_permission(self, request, view):
         return not request.user.is_authenticated

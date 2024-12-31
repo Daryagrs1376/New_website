@@ -1,5 +1,6 @@
 from news import views
 from . import views
+from django.http import HttpResponse
 from django.contrib import admin
 from django.urls import path, include
 from drf_yasg.views import get_schema_view
@@ -11,7 +12,7 @@ from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 from django.urls import re_path
 from django.utils.translation import gettext_lazy as _
-# from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_simplejwt.views import(
 TokenObtainPairView,
 TokenRefreshView,
@@ -19,6 +20,10 @@ TokenRefreshView,
 from .views import (
     AdminAdvertisingViewSet,
     PublicAdvertisingViewSet,
+    UserProfileDetailView,
+    add_subtitle,
+    SubtitleDetailView,
+    delete_subtitle,
     PostViewSet,
     NewsViewSet,
     CategoryViewSet,
@@ -56,12 +61,6 @@ from .views import (
     create_news,
     UserProfileDetailView,
 )
-from .views import UserProfileDetailView 
-from .views import add_subtitle
-from .views import SubtitleDetailView
-from .views import delete_subtitle
-from django.http import HttpResponse
-
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -89,7 +88,7 @@ urlpatterns = [
         
     path('send-sms/',views.send_sms),
     path('verify/', views.verify_otp, name='verify_otp'),
-            
+        
     path('comment/report/<int:comment_id>/', views.report_comment, name='report_comment'),
     path('article/<int:article_id>/', views.article_detail, name='article_detail'),
         
@@ -119,23 +118,24 @@ urlpatterns = [
     path('categories/<int:pk>/delete/', delete_category, name='category-delete'),
     path('categories/', CategoryListView.as_view(), name='category-list'),
     path('categories/<int:id>/', CategoryDetailView.as_view(), name='category-detail'),
-
+    
     path('subtitles/', subtitle_list, name='subtitle-list'),
     path('subtitles/add/', add_subtitle, name='subtitle-add'),
     path('subtitles/<int:id>/', SubtitleDetailView.as_view(), name='subtitle-detail'),
     path('subtitles/<int:pk>/edit/', add_subtitle, name='subtitle-edit'),
     path('subtitles/<int:pk>/delete/', delete_subtitle, name='subtitle-delete'),
-
+    
     path('userprofiles/<int:pk>/', UserProfileDetailView.as_view(), name='userprofile-detail'),
-
+    
     path('daily/', DailyStatsView.as_view(), name='daily-stats'),
     path('weekly/', WeeklyStatsView.as_view(), name='weekly-stats'),
-
+    
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token_create/', obtain_auth_token, name='token_create'),
+    
     path('protected/', ProtectedView.as_view(), name='protected-view'),
-
+    
     path('register/', UserRegistrationView.as_view(), name='user-registration'),
     path('custom-register/', RegisterView.as_view(), name='custom-register'),
 
@@ -148,5 +148,3 @@ urlpatterns = [
     path('password-reset-request/', RequestPasswordResetAPIView.as_view(), name='password-reset-request'),
     path('password-reset/<uidb64>/<token>/', ResetPasswordAPIView.as_view(), name='password-reset'),
 ]
-
-# urlpatterns = format_suffix_patterns(urlpatterns)

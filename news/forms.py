@@ -1,20 +1,6 @@
 from django import forms
-from .models import(
-ReporterProfile,
-Subtitle,
-Comment,
-NewsComment,
-User,
-)
+from .models import ReporterProfile, Comment, Subtitle, User
 
-
-class NewsCommentForm(forms.ModelForm):
-    class Meta:
-        model = NewsComment
-        fields = ['content', 'news', 'user']
-
-    content = forms.CharField(widget=forms.Textarea, label='Your Comment')
-    
 class ReporterProfileForm(forms.ModelForm):
     class Meta:
         model = ReporterProfile
@@ -24,7 +10,6 @@ class AddCategoryForm(forms.Form):
     title = forms.CharField(max_length=255, label='عنوان')
     main_category = forms.ChoiceField(choices=[(1, 'Category 1'), (2, 'Category 2')])  
     selectcategory= forms.CharField()
-    
     main_category = forms.ChoiceField(
         choices=[
             (1, 'sport'),
@@ -37,9 +22,8 @@ class AddCategoryForm(forms.Form):
         label='انتخاب دسته‌بندی اصلی',
         required=True,
     )
-
-    add_button = forms.BooleanField(required=False, label='افزودن دسته‌بندی جدید')
-    close_button = forms.BooleanField(required=False, label='بستن فرم')
+    add_button = forms.BooleanField(required=False, label='افزودن')
+    close_button = forms.BooleanField(required=False, label='بستن')
 
 class EditCategoryForm(forms.Form):
     onvan_news = forms.CharField(max_length=255, label='عنوان خبر', required=True)
@@ -64,7 +48,5 @@ class SubtitleForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['content']
-        labels = {
-            'content': 'متن دیدگاه',
-        }
+        fields = ['content'] 
+        

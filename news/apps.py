@@ -8,3 +8,8 @@ class NewsConfig(AppConfig):
     def ready(self):
         from haystack.management.commands.update_index import Command
         Command().handle()  
+from django.apps import AppConfig
+
+class NewsConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'news'

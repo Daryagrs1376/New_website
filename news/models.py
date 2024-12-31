@@ -183,13 +183,7 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
-    
-class NewsIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
-
-    def get_model(self):
-        return News
-        
+     
 class SpecialFeature(models.Model):
     feature_name = models.CharField(max_length=50)
 
@@ -234,7 +228,7 @@ class ReporterProfile(models.Model):
     def __str__(self):
         return f"Profile of {self.reporter.username}"
     
-class UserManager(BaseUserManager):
+class UserManager(models.Manager):
     def create_user(self, phone_number, password=None):
         if not phone_number:
             raise ValueError('Users must have a phone number')
@@ -253,7 +247,7 @@ class AddUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name', 'last_name']
-        
+
 class NewsKeywords(models.Model):
     news = models.ForeignKey('News', on_delete=models.CASCADE)
     keyword = models.ForeignKey('Keyword', on_delete=models.CASCADE)
@@ -261,15 +255,24 @@ class NewsKeywords(models.Model):
     def __str__(self):
         return f"{self.news.title} - {self.keyword.word}"
 
-    def get_or_create_keywords(keyword_list):
+    @classmethod
+    def get_or_create_keywords(cls, keyword_list):
         keywords = []
         for keyword in keyword_list:
             obj, created = Keyword.objects.get_or_create(name=keyword)
             keywords.append(obj)
         return keywords
 
+    class Meta:
+        verbose_name = "News Keyword"
+        verbose_name_plural = "News Keywords"
+
 class AnotherModel(models.Model):
     news = models.ForeignKey('News', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Another Model"
+        verbose_name_plural = "Another Models"
 
 class Role(models.Model):
     ADMIN = 'admin'
@@ -284,12 +287,12 @@ class Role(models.Model):
         return self.name
 
 class User(AbstractUser):
-    phone_number = models.CharField(max_length=15, unique=True) 
-    role = models.ForeignKey('Role', on_delete=models.SET_NULL, null=True) 
-    status = models.BooleanField(default=True) 
+    phone_number = models.CharField(max_length=15, unique=True)
+    role = models.ForeignKey('Role', on_delete=models.SET_NULL, null=True)
+    status = models.BooleanField(default=True)
     groups = models.ManyToManyField(
         Group,
-        related_name='news_user_groups', 
+        related_name='news_user_groups',
         blank=True,
         help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.'
     )
@@ -299,11 +302,9 @@ class User(AbstractUser):
         blank=True,
         help_text='Specific permissions for this user.'
     )
+
     def __str__(self):
         return self.username
-
-def default_expiration_date():
-    return timezone.now() + timedelta(days=30)
 
 class Advertising(models.Model):
     LOCATION_CHOICES = [
@@ -352,18 +353,22 @@ class PageView(models.Model):
     page_views = models.JSONField()  
     
 class Comment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)    
-    likes = models.IntegerField(default=0)
-    dislikes = models.IntegerField(default=0) 
     news = models.ForeignKey(News, related_name='comments', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
+
+class Comment(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)  
-    news_article = models.ForeignKey('NewsArticle', on_delete=models.CASCADE)
+    news_article = models.ForeignKey('NewsArticle', on_delete=models.CASCADE)  
     content = models.TextField()  
     created_at = models.DateTimeField(auto_now_add=True)  
     approved = models.BooleanField(default=False)  
     
     def __str__(self):
-        return f"Comment by {self.user.username} on {self.news_article.title}"
+        return f"Comment by {self.author.username} on {self.news_article.title}"
 
 class Report(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  
