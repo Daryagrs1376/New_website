@@ -177,15 +177,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-# # REST framework settings (AllowAny gives public access to API endpoints)
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ],
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',  # Public access for all users
-#     ],
-# }
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7), 
@@ -228,7 +219,7 @@ LOCALE_PATHS = [
     BASE_DIR / 'locale',
 ]
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # برای استفاده از Redis به عنوان broker
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
@@ -236,6 +227,6 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_BEAT_SCHEDULE = {
     'publish_scheduled_articles': {
         'task': 'news.tasks.publish_scheduled_articles',
-        'schedule': crontab(minute=0, hour=0),  # اجرای روزانه در نیمه‌شب
+        'schedule': crontab(minute=0, hour=0),  
     },
 }

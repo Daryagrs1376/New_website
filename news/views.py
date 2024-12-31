@@ -1,17 +1,12 @@
 from .utils import send_sms
-from .models import News
-from .serializers import CommentSerializer
-from .serializers import PostSerializer
-from rest_framework import generics
-from django_filters.rest_framework import DjangoFilterBackend # type: ignore
-from .permissions import IsNotAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from.forms import SubtitleForm, AddCategoryForm
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.utils.timezone import now, timedelta
 from django.views.generic.dates import ArchiveIndexView
 from django.views import View
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
@@ -24,6 +19,7 @@ from datetime import datetime, timedelta
 from django.utils.timezone import now
 from django.views import View
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
@@ -34,7 +30,7 @@ from django.contrib.auth.decorators import login_required
 from news.models import NewsCategory, NewsArticle, Category, News
 from django.utils import timezone
 from random import randint
-from twilio.rest import Client # type: ignore
+from twilio.rest import Client
 import os
 from django.conf import settings 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -44,19 +40,11 @@ TokenAuthentication )
 from django.utils.http import (
 urlsafe_base64_encode,
 urlsafe_base64_decode)
-from django.contrib.auth.tokens import (
-PasswordResetTokenGenerator)
 from rest_framework.generics import(
 RetrieveAPIView,
 CreateAPIView,
 UpdateAPIView,
 ListAPIView,
-)
-from .serializers import(
-UserProfileSerializer,
-PublicAdvertisingSerializer,
-AdminAdvertisingSerializer,
-RegisterSerializer,
 )
 from django.http import (
 HttpResponseForbidden,
@@ -88,15 +76,13 @@ permissions,
 from rest_framework.permissions import(
 AllowAny, 
 IsAuthenticatedOrReadOnly,
-IsAuthenticated,
 IsAdminUser,
 IsAuthenticated, 
-IsAdminUser, 
 )
 from .serializers import(
 AdvertisingSerializer,
 AdvertisingCreateUpdateSerializer,
-NewsSerializer,
+CommentSerializer,
 SettingSerializer,
 SettingCreateUpdateSerializer,
 PageViewSerializer,
@@ -124,23 +110,17 @@ ReporterProfile,
 UserProfile,
 PasswordResetToken,
 PageView,
-Advertising,
-Comment,
-UserProfile,
 Setting,
 Report,
 User, 
 Like,
-User,
-OTP, 
-User,
 OTP, 
 Role,
 Post,
-# News,
 )          
 from .permissions import(
 IsOwner,
+IsNotAuthenticated,
 IsAdminUserOrReadOnly,
 )
 
@@ -177,7 +157,7 @@ def like_article(request, article_id):
     
     return redirect('article_detail', article_id=article.id)
 
-@login_required  # این ویو باید فقط برای کاربران وارد شده در دسترس باشد
+@login_required 
 def report_comment(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
 
@@ -419,7 +399,6 @@ class PasswordResetRequestView(APIView):
             return Response({"message": "ایمیل بازیابی رمز عبور ارسال شد."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class PasswordResetView(APIView):
     def post(self, request, uidb64, token):
         try:
@@ -489,7 +468,6 @@ class AdvertisingViewSet(viewsets.ModelViewSet):
     queryset = Advertising.objects.all()
     serializer_class = AdvertisingSerializer
     authentication_classes = [JWTAuthentication]
-    
     permission_classes = [AllowAny]
     
     def get_permissions(self):
@@ -620,7 +598,6 @@ def add_category(request):
         if form.is_valid():
             onvan = form.cleaned_data['onvan']
             main_category = form.cleaned_data['main_category']
-
     else:
         form = AddCategoryForm()
 
@@ -639,7 +616,7 @@ def category_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-   
+
 class CategoryDetail(APIView):
     def get(self, request, pk):
         try:
@@ -670,6 +647,7 @@ class CategoryDetail(APIView):
         
         category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 class AddCategory(APIView):
     def post(self, request):
         serializer = CategorySerializer(data=request.data)
@@ -677,7 +655,6 @@ class AddCategory(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['POST'])
 @permission_classes([IsAdminUser])
@@ -739,10 +716,6 @@ def delete_subtitle(request, pk):
 class UserListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = ReporterProfileSerializer
-
-# class UserProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = ReporterProfile.objects.all()
-#     serializer_class = ReporterProfileSerializer
 
 class NewsList(APIView):
     def get(self, request):
@@ -814,10 +787,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
         user.username = new_username
         user.save()
         return Response({"message": "Username updated successfully."})
-
-# class OperationViewSet(viewsets.ModelViewSet):
-#     queryset = Operation.objects.all()
-#     serializer_class = OperationSerializer
     
 class DailyStatsView(APIView):
     def get(self, request):
@@ -881,13 +850,6 @@ class NewsUpdateView(UpdateAPIView):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     permission_classes = [AllowAny]
-
-    # def get(self, request, *args, **kwargs):
-    #     query = request.GET.get("query")
-    #     # جستجو در اخبار بر اساس query
-    #     results = News.objects.filter(title__icontains=query)
-    #     serialized_results = ...  # سریالایز کردن خروجی
-    #     return Response({"message": "News search works!"})
     
 class NewsCreateView(generics.CreateAPIView):
     queryset = News.objects.all()
@@ -935,80 +897,3 @@ class PublicAdvertisingListView(ListAPIView):
 class CommentCreateView(generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
- 
-    
-# from rest_framework.decorators import api_view
-# from rest_framework.response import Response
-# from drf_yasg.utils import swagger_auto_schema
-# from drf_yasg import openapi
-# from .models import UserProfile
-# from django.db.utils import IntegrityError
-
-# @swagger_auto_schema(
-#     method='post', 
-#     request_body=openapi.Schema(
-#         type=openapi.TYPE_OBJECT,
-#         properties={
-#             'phone': openapi.Schema(type=openapi.TYPE_STRING, description='Phone number'),
-#         },
-#         required=['phone'],
-#     ),
-#     responses={200: openapi.Response('Successful Response', openapi.Schema(
-#         type=openapi.TYPE_OBJECT,
-#         properties={
-#             'message': openapi.Schema(type=openapi.TYPE_STRING, description='Response message'),
-#         },
-#     ))}
-# )
-# @api_view(['POST'])
-# def send_sms(request):
-#     phone = request.data.get('phone')
-#     if phone and request.user.is_anonymous:
-#         verification_code_number = randint(1000, 9999)
-#         verification_code = str(verification_code_number)
-#         user = None 
-#         try:
-#             user = User.objects.create_user(username=phone)
-#             UserProfile.objects.create(user=user,phone_number=phone,verification_code=verification_code)
-    
-#             try:
-#                 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-#                 message = client.messages.create(
-#                     body=f"Your verification code is {verification_code}",
-#                     from_=settings.TWILIO_PHONE_NUMBER,
-#                     to=phone
-#                 )
-#                 return Response({'message': f'User created and SMS verification sent to {phone}'})
-#             except Exception as e:
-#                 return Response({'message': f'Failed to send SMS: {str(e)}'}, status=500)
-           
-#         except IntegrityError:
-#             user = User.objects.get(username=phone)
-#             user.profile.verification_code = verification_code
-#             user.profile.save()
-#             return Response({'message': 'Waiting to receive verification code!'})
-#         return Response({'message': 'fill phone number'})
-
-# @swagger_auto_schema(
-#     method='post', 
-#     request_body=openapi.Schema(
-#         type=openapi.TYPE_OBJECT,
-#         properties={
-#             'phone': openapi.Schema(type=openapi.TYPE_STRING, description='Phone number'),
-#             'code': openapi.Schema(type=openapi.TYPE_STRING, description='Verification code'),
-#         },
-#         required=['phone', 'code'],
-#     ),
-#     responses={200: openapi.Response('Successful Response', openapi.Schema(
-#         type=openapi.TYPE_OBJECT,
-#         properties={
-#             'phone': openapi.Schema(type=openapi.TYPE_STRING, description='Phone number'),
-#             'code': openapi.Schema(type=openapi.TYPE_STRING, description='Verification code'),
-#         },
-#     ))}
-# )
-# @api_view(['POST'])
-# def verify_code(request):
-#     phone = request.data.get('phone')
-#     code = request.data.get('code')
-#     return Response({'phone': phone, 'code': code})

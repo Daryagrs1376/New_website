@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from .models import(
 News,
 Setting,
-Comment,
 Role,
 Post,
 Keyword,
@@ -21,7 +20,6 @@ User = get_user_model()
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-
         fields = ['id', 'user', 'news_article', 'text','content', 'created_at']
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -145,24 +143,7 @@ class NewsSerializer(serializers.ModelSerializer):
     keywords = serializers.CharField()
     class Meta:
         model = News
-        # fields = [
         fields = '__all__'
-            # 'id',
-            # 'reporter',
-            # 'categories'
-            # 'title'
-            # 'content'
-            # 'short_description',
-            # 'news_text'
-            # 'created_at'
-            # 'updated_at'
-            # 'published_at',
-            # 'status'
-            # 'date'
-            # 'keywords'
-            # 'is_approved',
-        # ]
-        
         read_only_fields = ['id', 'created_at', 'updated_at']
 
     def validate(self, data):
@@ -171,7 +152,6 @@ class NewsSerializer(serializers.ModelSerializer):
         if not data.get('keywords'):
             raise serializers.ValidationError("فیلد 'keywords' نمی‌تواند خالی باشد.")
         return data
-
 
 class NewsEditSerializer(serializers.ModelSerializer):
     class Meta:
@@ -213,6 +193,7 @@ class AdvertisingSerializer(serializers.ModelSerializer):
             'id', 'title', 'link', 'banner', 'location',
             'start_date', 'expiration_date', 'status'
         ]    
+
 class AdvertisingCreateUpdateSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
     class Meta:
@@ -242,47 +223,3 @@ class NewsSearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = ['id', 'title', 'subtitle', 'content', 'created_at', 'author']
-
-
-# class OperationSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Operation
-#         fields = ['id', 'news', 'operation_type', 'performed_at']
-        
-# class AdminAdvertisingSerializer(serializers.ModelSerializer):
-#     status = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = Advertising
-#         fields = ['id', 'location', 'start_date', 'expiration_date', 'status']
-
-# class UserProfileSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserProfile
-#         fields = ['id', 'phone_number']
-
-# class UserSerializer(serializers.ModelSerializer):
-#     profile = UserProfileSerializer()
-    
-# class AddUserSerializer(serializers.ModelSerializer):
-#     password = serializers.CharField(write_only=True)
-#     confirm_password = serializers.CharField(write_only=True)
-
-#     class Meta:
-#         model = User
-#         fields = ['name', 'phone_number', 'password', 'confirm_password', 'role']
-
-#     def validate(self, data):
-#         if data['password'] != data['confirm_password']:
-#             raise serializers.ValidationError("Passwords do not match")
-#         return data
-
-#     def create(self, validated_data):
-#         user = User(
-#             name=validated_data['name'],
-#             phone_number=validated_data['phone_number'],
-#             role=validated_data['role'],
-#         )
-#         user.set_password(validated_data['password'])
-#         user.save()
-#         return user

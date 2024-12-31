@@ -1,8 +1,5 @@
 from django import forms
-from .models import User
-from .models import Subtitle
-from .models import ReporterProfile, Comment
-
+from .models import ReporterProfile, Comment, Subtitle, User
 
 
 class ReporterProfileForm(forms.ModelForm):
@@ -14,7 +11,6 @@ class AddCategoryForm(forms.Form):
     title = forms.CharField(max_length=255, label='عنوان')
     main_category = forms.ChoiceField(choices=[(1, 'Category 1'), (2, 'Category 2')])  
     selectcategory= forms.CharField()
-    
     main_category = forms.ChoiceField(
         choices=[
             (1, 'sport'),
@@ -26,9 +22,7 @@ class AddCategoryForm(forms.Form):
         ],
         label='انتخاب دسته‌بندی اصلی'
     )
-
     add_button = forms.BooleanField(required=False, label='افزودن')
-
     close_button = forms.BooleanField(required=False, label='بستن')
 
 class EditCategoryForm(forms.Form):
@@ -55,4 +49,3 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content'] 
-        
