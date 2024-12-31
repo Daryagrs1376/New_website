@@ -13,7 +13,6 @@ from django.apps import apps
 from django.conf import settings
 from django.utils import timezone
 from django.utils.timezone import now
-# from django.contrib.auth import get_user_model
 from django.contrib.auth.models import(
 AbstractBaseUser,
 BaseUserManager,
@@ -23,9 +22,6 @@ Group,
 Permission,
 PermissionsMixin,
 )
-
-# User = get_user_model()
-
 
 class Tokens(models.Model):
     token = models.CharField(max_length=100)
@@ -305,6 +301,9 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+def default_expiration_date():
+    return datetime.now() + timedelta(days=30)
 
 class Advertising(models.Model):
     LOCATION_CHOICES = [
